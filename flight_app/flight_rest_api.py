@@ -51,6 +51,6 @@ def update_flights():
         return jsonify({"error": "Invalid JSON data"}), 400
 
 if __name__ == '__main__':
-    data_file = r"flight_app/flights_data.csv"
+    data_file = r"flight_app/data/flights_data.csv"
     init_app_data_file(data_file)
     flight_app.run(debug=True)
