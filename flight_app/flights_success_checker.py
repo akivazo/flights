@@ -36,11 +36,11 @@ class FlightSuccessChecker:
             if row[3] == "success":
                 success_count += 1
 
-    def __get_minutes_delta(self, time1, time2):
+    def __get_minutes_delta(self, time1: str, time2: str):
         # return the time delta in minutes between time1 and time2 
         format = "%H:%M"
-        time1_dt = datetime.strptime(time1, format)
-        time2_dt = datetime.strptime(time2, format)
+        time1_dt = datetime.strptime(time1.strip(), format)
+        time2_dt = datetime.strptime(time2.strip(), format)
 
         time_delta = time2_dt - time1_dt
         return time_delta.total_seconds() / 60
@@ -59,28 +59,38 @@ class FlightSuccessChecker:
                 row[3] = "fail"
         
 
-            
-def read_flights_data(csv_file):
+class FlightSuccessCheckerEntryPoint:
+    def read_flights_data(self, csv_file):
+        with open(csv_file, newline='') as f:
+            csv_reader = csv.reader(f)
+            # save the header line
+            self.__header = next(csv_reader)
+            return list(csv_reader)
 
-    csv_reader = csv.reader(csvfile=csv_file)
-    # skip the header line
-    header = next(csv_reader)
-    return list(csv_reader)
+    def write_flights_data(self, csv_file, flights):
+        with open(csv_file, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            #write header
+            writer.writerow(self.__header)
+            # Write the data to the CSV file
+            writer.writerows(flights)
 
-def write_flights_data(csv_file, flights):
-    with open(csv_file, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        
-        # Write the data to the CSV file
-        writer.writerows(flights)
+    def __init__(self, input_csv_file, output_csv_file):
+        self.__input_csv_file = input_csv_file
+        self.__output_csv_file = output_csv_file
+    
+    def run(self):
+        flights_data = self.read_flights_data(self.__input_csv_file)
+
+        flights_status_checker = FlightSuccessChecker(flights_data=flights_data)
+        flights_data = flights_status_checker.get_update_flights()
+
+        self.write_flights_data(csv_file=self.__output_csv_file, flights=flights_data)
 
 if __name__ == "__main__":
     
-    csv_file = sys.argv[1]
+    input_csv_file = sys.argv[1]
+    output_csv_file = sys.argv[1]
+    FlightSuccessCheckerEntryPoint(input_csv_file=input_csv_file, output_csv_file=output_csv_file).run()
 
-    flights_data = read_flights_data(csv_file)
-
-    flights_status_checker = FlightSuccessChecker(flights_data=flights_data)
-    flights_data = flights_status_checker.get_update_flights()
-
-    write_flights_data(csv_file=csv_file, flights=flights_data)
+    
