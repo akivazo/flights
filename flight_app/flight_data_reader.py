@@ -23,6 +23,7 @@ class FlightDataReader:
             writer.writerows(flights)
 
     def __init__(self, input_csv_file, output_csv_file= None):
+        print(input_csv_file, output_csv_file)
         self.__input_csv_file = input_csv_file
         self.__output_csv_file = input_csv_file if output_csv_file is None else output_csv_file
 
