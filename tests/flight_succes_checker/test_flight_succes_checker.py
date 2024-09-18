@@ -1,12 +1,12 @@
 import pytest
-from ..flight_app.flights_success_checker import FlightSuccessChecker
+from ...flight_app.flights_success_checker import FlightSuccessChecker
 
 def get_flights_status_checker(data):
     return FlightSuccessChecker(flights_data=data)
 
 def test_no_flights():
     flights_status_checker  = get_flights_status_checker(data=[])
-    res = flights_status_checker.get_update_flights()
+    res = flights_status_checker.get_flights_with_success_status()
 
     assert res == []
 
@@ -18,7 +18,7 @@ def test_all_success():
         
     ])
 
-    res = flights_status_checker.get_update_flights()
+    res = flights_status_checker.get_flights_with_success_status()
 
     # assert all success and sorted by arrival
     assert res == [
@@ -37,7 +37,7 @@ def test_short_time_delta():
         
     ])
 
-    res = flights_status_checker.get_update_flights()
+    res = flights_status_checker.get_flights_with_success_status()
 
     # assert correct status and sorted by arrival
     assert res == [
@@ -73,7 +73,7 @@ def test_too_much_success():
         ["id22", "20:05", "23:10", ""],
     ])
 
-    res = flights_status_checker.get_update_flights()
+    res = flights_status_checker.get_flights_with_success_status()
 
     assert res ==   [
         ["id1", "00:00", "03:01", "success"],
@@ -112,7 +112,7 @@ def test_with_custom_params():
         ["id5", "21:01", "23:00", ""], # too many success
         ], min_minutes_delta=5, max_success=3)
 
-    res = flights_status_checker.get_update_flights()
+    res = flights_status_checker.get_flights_with_success_status()
 
     assert res == [
         ["id1", "00:00", "00:05", "success"],

@@ -1,14 +1,14 @@
 import pytest, csv
 import filecmp
 import os
-from ..flight_app.flights_success_checker import FlightSuccessCheckerEntryPoint
+from ...flight_app.flights_success_checker import FlightSuccessCheckerEntryPoint
 
 def test_full_flow():
-    before_csv_file = r"tests\flight_data_no_status.csv"
+    before_csv_file = r"tests/flight_succes_checker/flight_data_no_status.csv"
 
-    after_csv_file = r"tests\flight_data_with_status.csv"
+    after_csv_file = r"tests/flight_succes_checker/flight_data_with_status.csv"
 
-    expected_after_csv_file = r"tests\expected_flight_data_with_status.csv"
+    expected_after_csv_file = r"tests/flight_succes_checker/expected_flight_data_with_status.csv"
 
     if os.path.exists(after_csv_file):
         # freash start

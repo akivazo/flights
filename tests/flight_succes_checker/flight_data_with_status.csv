@@ -1,4 +1,4 @@
-light ID, Arrival, Departure , success
+Flight ID, Arrival, Departure , success
 G86, 07:30, 14:00 ,success
 C23, 08:00, 17:00 ,success
 A21, 08:00, 13:00 ,success

@@ -1,4 +1,4 @@
-import csv
+from .flight_data_reader import FlightDataReader
 from datetime import datetime
 import sys, os
 
@@ -15,7 +15,7 @@ class FlightSuccessChecker:
         self.__min_minutes_delta = min_minutes_delta
         self.__max_success = max_success
 
-    def get_update_flights(self) -> list:
+    def get_flights_with_success_status(self) -> list:
         # sort the flight by arrival
         sorted_flights = list(sorted(self.__flight_data, key=lambda flight_data: flight_data[1]))
         self.__update_status_by_time_delta(sorted_flights)
@@ -60,32 +60,17 @@ class FlightSuccessChecker:
         
 
 class FlightSuccessCheckerEntryPoint:
-    def read_flights_data(self, csv_file):
-        with open(csv_file, newline='') as f:
-            csv_reader = csv.reader(f)
-            # save the header line
-            self.__header = next(csv_reader)
-            return list(csv_reader)
-
-    def write_flights_data(self, csv_file, flights):
-        with open(csv_file, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            #write header
-            writer.writerow(self.__header)
-            # Write the data to the CSV file
-            writer.writerows(flights)
 
     def __init__(self, input_csv_file, output_csv_file):
-        self.__input_csv_file = input_csv_file
-        self.__output_csv_file = output_csv_file
+        self.__data_reader = FlightDataReader(input_csv_file, output_csv_file)
     
     def run(self):
-        flights_data = self.read_flights_data(self.__input_csv_file)
+        flights_data = self.__data_reader.get_data()
 
         flights_status_checker = FlightSuccessChecker(flights_data=flights_data)
-        flights_data = flights_status_checker.get_update_flights()
+        flights_data = flights_status_checker.get_flights_with_success_status()
 
-        self.write_flights_data(csv_file=self.__output_csv_file, flights=flights_data)
+        self.__data_reader.write_flights_data(flights=flights_data)
 
 if __name__ == "__main__":
     
