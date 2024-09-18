@@ -37,11 +37,11 @@ def update_flights():
     flights_data = data_reader.get_data()
     if request.is_json:
         json_data = request.get_json()
+        # Add the 'success' field
+        for flight_data in json_data:
+            flight_data.append("")
         # Add the input flights
         flights_data.extend(json_data)
-        # Add the 'success' field
-        for flight_data in flights_data:
-            flight_data.append("")
         success_checker = FlightSuccessChecker(flights_data)
         # Update the success field
         checked_flights = success_checker.get_flights_with_success_status()

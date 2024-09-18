@@ -3,11 +3,16 @@ from typing import List
 
 class FlightDataReader:
     def read_flights_data(self):
+        result = []
         with open(self.__input_csv_file, newline='') as f:
             csv_reader = csv.reader(f)
             # save the header line
             self.__header = next(csv_reader)
-            return list(csv_reader)
+            for row in csv_reader:
+                # add only if not empty
+                if row:
+                    result.append(row)
+            return result
 
     def write_flights_data(self, flights):
         with open(self.__output_csv_file, mode='w', newline='') as file:
