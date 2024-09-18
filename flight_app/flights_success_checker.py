@@ -18,7 +18,7 @@ class FlightSuccessChecker:
     def get_flights_with_success_status(self) -> list:
         # sort the flight by arrival
         sorted_flights = list(sorted(self.__flight_data, key=lambda flight_data: flight_data[1]))
-        self.__update_status_by_time_delta(sorted_flights)
+        self.__update_status_by_min_time_delta(sorted_flights)
         self.__update_status_if_too_much_success(sorted_flights)
         return sorted_flights
     
@@ -37,7 +37,7 @@ class FlightSuccessChecker:
                 success_count += 1
 
     def __get_minutes_delta(self, time1: str, time2: str):
-        # return the time delta in minutes between time1 and time2 
+        # return the time delta in minutes between 'time1' and 'time2' 
         format = "%H:%M"
         time1_dt = datetime.strptime(time1.strip(), format)
         time2_dt = datetime.strptime(time2.strip(), format)
@@ -45,11 +45,12 @@ class FlightSuccessChecker:
         time_delta = time2_dt - time1_dt
         return time_delta.total_seconds() / 60
     
-    def __update_status_by_time_delta(self, sorted_flights):
+    def __update_status_by_min_time_delta(self, sorted_flights):
         for row in sorted_flights:
             arrival = row[1]
             departure = row[2]
             
+            # time in minutes between arrival and departure
             time_delta = self.__get_minutes_delta(time1=arrival, time2=departure)
 
             if time_delta >= self.__min_minutes_delta:
@@ -60,7 +61,9 @@ class FlightSuccessChecker:
         
 
 class FlightSuccessCheckerEntryPoint:
-
+    '''
+    A wrapper class to retrieve the data from the file and write after proccessing
+    '''
     def __init__(self, input_csv_file, output_csv_file):
         self.__data_reader = FlightDataReader(input_csv_file, output_csv_file)
     
