@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from .flight_data_reader import FlightDataReader
 from .flights_success_checker import FlightSuccessChecker
+import sys
 
-data_file = r"flight_app/flights_data.csv"
 flight_app = Flask(__name__)
-data_reader = FlightDataReader(data_file)
+data_reader = None
+
+def init_app_data_file(data_file):
+    global flight_app, data_reader
+    data_reader = FlightDataReader(data_file)
 
 @flight_app.route("/flights/<flight_id>", methods=["GET"])
 def get_flight_data(flight_id):
@@ -47,4 +51,6 @@ def update_flights():
         return jsonify({"error": "Invalid JSON data"}), 400
 
 if __name__ == '__main__':
+    data_file = r"flight_app/flights_data.csv"
+    init_app_data_file(data_file)
     flight_app.run(debug=True)
